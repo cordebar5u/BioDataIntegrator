@@ -1,0 +1,28 @@
+# Ignorer les fichiers et dossiers générés par Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignorer les fichiers et dossiers de l'environnement virtuel
+env/
+venv/
+
+# Ignorer les fichiers de logs et de base de données
+*.log
+*.db
+*.sqlite3
+
+# Ignorer les fichiers de sauvegarde et de configuration de l'éditeur
+*.bak
+*.swp
+*.swo
+*.ds_store
+
+# Ignorer les fichiers et dossiers spécifiques au projet
+data/
+DRUGBANK/
+HPOHPO/
+OMIM/
+SIDER/
+STITCH - ATC/
