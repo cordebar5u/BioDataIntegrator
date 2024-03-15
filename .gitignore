@@ -22,7 +22,7 @@ venv/
 # Ignorer les fichiers et dossiers spécifiques au projet
 data/
 DRUGBANK/
-HPOHPO/
+HPO/
 OMIM/
 SIDER/
 STITCH - ATC/
