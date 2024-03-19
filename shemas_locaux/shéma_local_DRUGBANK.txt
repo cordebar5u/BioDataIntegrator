@@ -1,0 +1,17 @@
+Un médicament fait environ 2656 lignes de code.
+La bibliothèque contient environ 10562 médicaments.
+
+Pour chaque druq (=médicament):
+- type (str)
+- id (str)
+- name (str)
+- description (str)
+- indication (str) : indications
+- toxicity (str) : effets secondaires 
+- synonym (str)
+
+ 
+
+À priori pas besoin de : 
+targets -> target -> id 
+cas-number ? (str) (Je ne sais pas encore à quoi ca peut servir mais bon c'est dans celle du prof)
