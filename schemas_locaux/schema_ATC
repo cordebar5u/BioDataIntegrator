@@ -1,0 +1,6 @@
+{
+    "chemical" : "String", 
+    "alias" : "String",
+    "source" : "String",
+    "source_id" : "String"
+}
