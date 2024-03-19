@@ -1,0 +1,12 @@
+AV : Allelic Variants, ce sont des variantes alléliques d'un gène.
+CD : Clinical Synopsis, il s'agit d'un résumé clinique d'un trouble génétique.
+CN : Census, ce sont des données démographiques sur la prévalence d'un trouble.
+CS : Clinical Features, ce sont les caractéristiques cliniques d'un trouble.
+ED : Editorial Comments, ce sont des commentaires éditoriaux.
+NO : Nomenclature, il s'agit de la terminologie et de la nomenclature utilisées pour un gène ou un trouble.
+RF : References, ce sont les références bibliographiques.
+SA : Summary, il s'agit d'un résumé du gène ou du trouble.
+TI : Title, c'est le titre de l'entrée de la base de données.
+TX : Text, il s'agit du texte complet de l'entrée de la base de données.
+
+

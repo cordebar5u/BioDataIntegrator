@@ -1,1 +1,0 @@
-"phenotype_annotation" ("disease_db" VARCHAR,"disease_id" VARCHAR,"disease_label" VARCHAR,"col_4" VARCHAR DEFAULT (null) ,"sign_id" VARCHAR DEFAULT (null) ,"disease_db_and_id" VARCHAR DEFAULT (null) ,"col_7" ,"col_8" ,"col_9" ,"col_10" ,"col_11" ,"col_12" ,"col_13" ,"col_14" )

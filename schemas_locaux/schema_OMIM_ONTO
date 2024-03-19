@@ -1,0 +1,10 @@
+{
+    "Class ID": "object",
+    "Preferred Label": "object",
+    "Synonyms": "object",
+    "Definitions": "float64",
+    "Obsolete": "bool",
+    "CUI": "object",
+    "Semantic Types": "object",
+    "Parents": "object"
+}
