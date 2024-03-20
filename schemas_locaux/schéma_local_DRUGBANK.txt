@@ -11,6 +11,7 @@ Pour chaque druq (=médicament):
 - synonym (str)
 
  
+Important peut être : drug-interactions
 
 À priori pas besoin de : 
 targets -> target -> id 

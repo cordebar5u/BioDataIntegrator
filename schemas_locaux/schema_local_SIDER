@@ -1,0 +1,82 @@
+Meddra =  dictionnaire de terminologie médicale international
+
+PT signifie Preferred Term (Terme Préféré)
+LT signifie Lower Level Term (Terme de Niveau Inférieur)
+
+meddra : dicto terminologie
+
+MedDRA_Code (str) : permet de naviguer  dans les tables de SIDER
+Term_Type (str)
+Term_Code (int)
+Term_Description (str)
+
+
+meddra_all_indications : Les indications
+
+CUI (str) : identifiant unique 
+MedDRA_Code (str) 
+Type (str) : type de mention
+Term_Description (str) : La description du contexte ou de l'indication
+MedDRA_Code_terme : Le code MedDRA pour le terme spécifique
+Term_Description (str) : La description textuelle du terme
+
+
+meddra_all_se : effets secondaires (se = side effects)
+
+CUI (str)
+Colonne sans nom : Semble être un identifiant secondaire ou un sous-ensemble associé au CID.
+MedDRA_Code (str)
+Term_Type (str)
+MedDRA_Code_terme : Le code MedDRA pour le terme spécifique
+Term_Description (str)
+
+
+meddra_freq : fréquences à laquelle certains effets secondaires ou symptômes apparaissent dans un contexte spécifique
+
+CUI (str)
+MedDRA_Code (str)
+Deux colonnes sans nom: Pourraient correspondre à des informations de dosage ou de classification, mais il manque le contexte pour les définir précisément
+Pourcentage et deux colonnes numériques suivantes: Fréquence de l'effet secondaire.
+Term_Type (str)
+MedDRA_Code_terme : Le code MedDRA pour le terme spécifique
+Term_Description (str)
+
+
+
+CE QU'ON GARDE :
+
+
+meddra : dicto terminologie
+
+MedDRA_Code (str) : permet de naviguer  dans les tables de SIDER
+Term_Type (str)
+MedDRA_Code_terme (int) : Le code MedDRA pour le terme spécifique
+Term_Description (str)
+
+
+meddra_all_indications : Les indications
+
+CUI (str) : identifiant unique 
+MedDRA_Code (str) 
+Term_Description (str) : La description du contexte ou de l'indication
+MedDRA_Code_terme (int) : Le code MedDRA pour le terme spécifique
+Term_Description (str) : La description textuelle du terme
+
+
+meddra_all_se : effets secondaires (se = side effects)
+
+CUI (str)
+MedDRA_Code (str)
+Term_Type (str)
+MedDRA_Code_terme : Le code MedDRA pour le terme spécifique
+Term_Description (str)
+
+
+meddra_freq : fréquences à laquelle certains effets secondaires ou symptômes apparaissent dans un contexte spécifique
+
+CUI (str)
+MedDRA_Code (str)
+Term_Type (str)
+MedDRA_Code_terme : Le code MedDRA pour le terme spécifique
+Term_Description (str)
+
