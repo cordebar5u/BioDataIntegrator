@@ -1,0 +1,14 @@
+HPO :
+    hpo.obo : Contient les termes HPO avec leurs définitions, synonymes, et relations hiérarchiques.
+    HPO_annotations sera utilisées pour enrichir les informations disponibles dans les autres bases de données, notamment OMIM, afin de proposer des diagnostics plus précis.
+OMIM :
+    omim.txt : Contient des informations générales sur les maladies OMIM.
+    omim_onto.csv : Contient les associations entre les identifiants OMIM et les termes HPO.
+SIDER :
+    meddra.tsv : Contient les termes MedDRA liés aux effets secondaires des médicaments.
+    meddra_all_indications.tsv : Contient les associations entre les termes MedDRA et les indications des médicaments.
+    meddra_all_se.tsv : Contient les associations entre les termes MedDRA et les effets secondaires des médicaments.
+    meddra_freq.tsv : Contient les associations entre les termes MedDRA et les fréquences des effets secondaires des médicaments.
+STITCH et ATC :
+    kegg_levels_E_F.txt : Contient les associations entre les niveaux E et F de la classification ATC et les médicaments correspondants.
+    chemical.sources.v5.0.tsv : Contient les associations entre les identifiants STITCH, les codes ATC et les labels des médicaments.

@@ -6,7 +6,7 @@ Réalisation d'un système d'intégration de données biomédicales
 
 Téléchargez les données nécessaires au projet depuis Arches et les placer dans un dossier data/ à la racine du git.
 
-## Pour les commits : 
+## Pour les commits: 
 
 - fonctionnalité – une nouvelle fonctionnalité est introduite avec les modifications
 - correctif – un correctif de bug a été effectué

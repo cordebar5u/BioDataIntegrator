@@ -1,0 +1,115 @@
+@startuml
+skinparam shadowing false
+
+title Schema Global
+
+
+class Global{
+    + Sympyomes
+    + Maladies
+    + Médicaments
+    + Source
+    + (Score)
+}
+
+class MedDRA_all_se {
+    + Code_MedDRA : CID1xxxxxxxx
+    + (CUI)
+    + Symptomes
+}
+
+class Stitch{
+    + Code_MedDRA
+    + (CUI : CIDs)
+    + Code ATC
+}
+
+class ATC{
+    + code ATC (niv E)
+    + nom chimique (E et F)
+}
+
+class HPO_Annotations {
+    + source_db
+    + id_maladie 
+    + nom_maladie
+    + sign_id : 0010527
+}
+
+class HPO_Obo{
+    + id : 0010527
+    + Nom symptome
+    + Synonymes symptome
+}
+
+class OMIM_Onto {
+    + Nom courant
+    + Synonymes
+    + CUI
+}
+
+class OMIM{}
+
+class MedDRA {
+    + CUI
+    + Symptome
+}
+
+class DrugBank {
+    + nom medicament
+    + maladies : Indications
+    + effets_secondaires : Toxicity
+    + (Synonymes)
+}
+
+
+class MedDra_all_indications {
+    + MedDRA_Code
+    + CUI
+    + Symptomes
+}
+
+class MeDra_freq{
+    + Code_MedDRA
+    + CUI
+    + Pourcentage (Score)
+    + Symptomes  
+}
+
+Global --> MedDRA_all_se
+Global --> HPO_Annotations
+Global --> MedDRA
+Global --> OMIM
+Global --> DrugBank
+Global --> MedDra_all_indications
+
+ATC --> Global : Substance chimique
+HPO_Annotations --> Global
+OMIM_Onto --> Global
+DrugBank --> Global
+MeDra_freq --> Global
+
+
+
+MedDRA_all_se --> Stitch
+Stitch --> ATC : code ATC
+HPO_Obo --> HPO_Annotations : id
+
+MedDra_all_indications --> MeDra_freq : CUI
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
