@@ -4,14 +4,16 @@ import flet as ft
 
 is_dark_mode = True
 
-
-def send_message(page, message_list, message_input):
+def send_message(page: ft.Page, message_list: ft.Column, message_input: ft.TextField):
     # Affichage du message
     q = str(message_input.value)
     message_list.controls.append(ft.Row([
         ft.Container(content=ft.Text(message_input.value), bgcolor=ft.colors.LIGHT_BLUE, padding=10, border_radius=10),
         ft.Container(content=ft.Text("You"), bgcolor=ft.colors.LIGHT_BLUE_ACCENT, padding=5, border_radius=5, margin=ft.margin.only(left=10))
     ], alignment=ft.MainAxisAlignment.END))
+    page.splash.visible = True
+    page.update()
+    time.sleep(5)
     repMax = "read"
     message_list.controls.append(ft.Row([
         ft.Container(content=ft.Image("static/images/max.png", width=25,height=25,fit=ft.ImageFit.CONTAIN,), bgcolor=ft.colors.WHITE, padding=5, border_radius=5, margin=ft.margin.only(left=10)),
@@ -19,9 +21,11 @@ def send_message(page, message_list, message_input):
     ], alignment=ft.MainAxisAlignment.START))
     # Mise à jour de la page
     message_input.value = ""
+    page.splash.visible = False
     message_input.update()
     page.update()
 
+    
 
 def switch_theme(page: ft.Page, is_dark_mode: bool):
     page.theme_mode = "light" if page.theme_mode =="dark" else "dark"
@@ -40,14 +44,14 @@ def switch_theme(page: ft.Page, is_dark_mode: bool):
 
 
 def main(page: ft.Page):
-    page.title = "BioGuess"
+    page.title = "J'ai quoi ?"
     page.theme_mode = "dark"
     page.splash = ft.ProgressBar(visible=False)
     
     # Chat interface
 
     #######################
-    ####### Objects #######
+    ####### Objects ### ?####
     #######################
 
     message_list = ft.Column(expand=1, wrap=False, scroll="always")
@@ -55,20 +59,11 @@ def main(page: ft.Page):
     send_button = ft.ElevatedButton("Send", on_click=lambda e: send_message(page, message_list, message_input,))    
     
     toggledarklight = ft.IconButton(on_click=lambda e: switch_theme(page, is_dark_mode),icon="dark_mode",selected_icon="light_mode",style=ft.ButtonStyle(color={"":ft.colors.BLACK,"selected":ft.colors.WHITE}))
-    head = ft.AppBar(title=ft.Text("Chat",size=30),bgcolor="Yellow",leading=ft.IconButton(icon="menu"),actions=[toggledarklight ])
-
-    navigation_bar = ft.NavigationBar(
-        destinations=[
-            ft.NavigationDestination(icon=ft.icons.CHAT, label="Chat"),
-            ft.NavigationDestination(icon=ft.icons.MUSIC_NOTE, label="Singer"),
-            ft.NavigationDestination(icon=ft.icons.BOOK_SHARP,label="Lessons",),
-        ]
-    )
+    head = ft.AppBar(title=ft.Text("J'ai quoi ?",size=30,color="black"),bgcolor="Yellow",leading=ft.IconButton(icon="Chat"),actions=[toggledarklight ])
 
     #######################
 
-    page.add(head, message_list, message_input, send_button, navigation_bar)
+    page.add(head, message_list, message_input, send_button, )
     page.update()
-
 
 ft.app(target=main, view=ft.AppView.FLET_APP)
