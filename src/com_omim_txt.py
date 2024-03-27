@@ -75,7 +75,7 @@ def ajout_donnees(writer):
 	fichier.close()
 
 # Recherche dans l'index
-def recherche(symptome: str, verbose: bool):
+def recherche(symptome: str, verbose =False):
       
 	# Regarde si l'index existe
 	data_dir = os.path.join(os.path.dirname(__file__), '..', 'data', 'OMIM', 'index')

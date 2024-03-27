@@ -6,6 +6,7 @@ BEGIN{
         exit 1
     }
     # Associez les arguments à des variables
+    fichier = ARGV[1]
     colonne = ARGV[2]
     FS = "	"
 }
