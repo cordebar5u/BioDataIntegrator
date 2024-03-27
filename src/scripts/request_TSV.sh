@@ -2,19 +2,22 @@
 
 BEGIN{
     # Verifier que le nombre d'arguments est correct
-    if (ARGC != 4) {
+    if (ARGC != 5) {
         exit 1
     }
     # Retrieve the arguments
     tsv_fichier = ARGV[1]
     colonne = ARGV[2]
     motif = ARGV[3]
-    saut_ligne = ARGV[4]
-    FS = "	"
+    afficherColonne = ARGV[4]
+    FS = "\t"
 }
 {
     if($colonne ~ motif) {
-        print $0
+        if (NR > 1) {
+            printf ","
+        }
+        printf $afficherColonne
     }
 }
 END{
