@@ -90,24 +90,23 @@ def recherche(symptome: str, verbose =False):
 	parser = QueryParser("symptome",ix.schema)
 	myquery = parser.parse(symptome)
 	s = ix.searcher()
-	results = s.search(myquery)
+	resultats = s.search(myquery)
 
-	print(verbose)
 	# Affiche les résultats si demandé
 	if verbose :
 		print("Résultats de la recherche :")
-		for result in results :
-			chaine = "===\n" + result.get("id") + "===\n"
+		for resultat in resultats :
+			chaine = "===" + resultat.get("id") + "===\n"
 			print(chaine)
 	
-	resultsList = list()
-	for result in results :
-		resultsList.append("OMIM:" + result.get("id"))
-	return resultsList
+	resultatsListe = list()
+	for resultat in resultats :
+		resultatsListe.append("OMIM:" + resultat.get("id"))
+	return resultatsListe
 
 
 def test():
-	print(recherche("abnormality of the nervous system", True))
+	print(recherche("abnormality of the nervous system", False))
 
 if __name__ == '__main__':
 	creer_index()

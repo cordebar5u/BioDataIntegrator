@@ -82,7 +82,7 @@ def  rechercher_medicament(fichier_xml, indication, toxicity):
         print(medicament)
 
 
-rechercher_medicament("data/DRUGBANK/drugbank.xml", "","thrombocytopenia")
+#rechercher_medicament("data/DRUGBANK/drugbank.xml", "","thrombocytopenia")
 #rechercher_medicament("data/DRUGBANK/drugbank.xml","", "Renal failure")
 
 
