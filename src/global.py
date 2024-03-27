@@ -20,8 +20,9 @@ def maladies_responsables():
     indication = input("Veuillez entrer votre maladie (indication) : ").strip()
     output = execute_shell_command("request_TSV", "SIDER/meddra.tsv", 4, indication, 1)
     
-    for line in output:
-        print(line)
+    print(output)
+    for element in output:
+        print(element)
 
 # Exécute la fonction principale
 if __name__ == "__main__":
