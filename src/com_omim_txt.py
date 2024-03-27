@@ -98,7 +98,6 @@ def recherche(symptome: str, verbose =False):
 		print("Résultats de la recherche :")
 		for result in results :
 			chaine = "===\n" + result.get("id") + "===\n"
-			chaine += "---\n" + str(result.get("symptome")) + "---\n"
 			print(chaine)
 	
 	resultsList = list()
