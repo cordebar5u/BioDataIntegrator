@@ -14,10 +14,7 @@ BEGIN{
 }
 {
     if($colonne ~ motif) {
-        if (NR > 1) {
-            printf ","
-        }
-        printf $afficherColonne
+        print $afficherColonne
     }
 }
 END{
