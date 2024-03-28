@@ -147,7 +147,7 @@ def obtenir_medicaments_responsables_atc(indication):
     if code_medDRa != []:
         for code in code_medDRa:
             code[3].replace("0", "s")
-            code_ATC.extend(execute_shell_command("request_TSV", "STITCH\ -\ ATC/chemical.sources.v5.0.tsv", 1, code, 4))
+            code_ATC.extend(execute_shell_command("request_TSV", "STITCH\ -\ ATC/chemical_atc.tsv", 1, code, 4))
             code_ATC = list(set(code_ATC))
             print(code_ATC)
         if code_ATC != []:
