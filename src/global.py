@@ -17,14 +17,19 @@ def execute_shell_command(exec, data, index, motif, afficher):
         
     return output_lines
 
+def entrer_indication():
+    indication = input("Veuillez entrer votre maladie (indication) : ").strip()
+    maladies_responsables(indication)
+    medicaments_responsables(indication) 
+    return indication
+
 # Prendre Acute abdomen comme exemple
-def maladies_responsables():
+def maladies_responsables(indication):
 
     noms_maladies = []
     preferred_label = []
     CUIs = []
 
-    indication = input("Veuillez entrer votre maladie (indication) : ").strip()
     sortie = execute_shell_command("request_TSV", "SIDER/meddra.tsv", 4, indication, 1)
 
     # Garde les identifiants uniques des concepts (CUI) dans une liste
@@ -41,7 +46,18 @@ def maladies_responsables():
             
     noms_maladies = obtenir_nom_maladies_hpo(indication)
     print("Les maladies responsables de l'indication/symptome sont : ", noms_maladies)
-    return noms_maladies       
+    return noms_maladies  
+
+def medicaments_responsables(indication):
+
+    medicaments = []
+    medicaments = cdb.rechercher_medicament_par_toxicity("data/DRUGBANK/drugbank.xml", indication)
+    if medicaments == []:
+        print("Aucun médicament trouvé ayant pour effet secondaire l'indication/symptome.")
+    else:
+        print("Les médicaments responsables de l'indication/symptome sont : ", medicaments)
+    return medicaments
+     
 
 
 def obtenir_nom_maladies_hpo(indication): 
@@ -77,7 +93,7 @@ def obtenir_nom_maladies_hpo(indication):
 
 # Exécute la fonction principale
 if __name__ == "__main__":
-    maladies_responsables()
+    entrer_indication()
 
 
 
