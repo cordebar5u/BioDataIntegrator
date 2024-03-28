@@ -48,8 +48,10 @@ def maladies_responsables(indication):
 
     # Travail sur le libellé préféré des maladies (Abscess)
             
-    noms_maladies = obtenir_nom_maladies_hpo(indication)  # pas pref_label??
-    print("Les maladies responsables de l'indication/symptome sont : ", noms_maladies)
+    noms_maladies = obtenir_nom_maladies_hpo(preferred_label)  # anciennement indication à la place de preferred_label
+    print("Les maladies responsables de l'indication/symptome sont : ")
+    for i in noms_maladies:
+        print(i)
     return noms_maladies  
 
 def obtenir_nom_maladies_hpo(indication): 
@@ -73,7 +75,7 @@ def obtenir_nom_maladies_hpo(indication):
         print("Indication : ", indication, type(indication))
     
     for i in indication: 
-        sign_id = hpo.recherche_symptome(i, False)
+        sign_id = hpo.recherche_symptome(i, False)   # Deuxième argument pour la verbose
         id_maladie = omim.recherche(i)
 
         for i in sign_id:  # Premier chemin
