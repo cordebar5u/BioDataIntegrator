@@ -1,73 +1,141 @@
 import time
 import flet as ft
 
+# Variables
 
 is_dark_mode = True
+index = 0
 
-def send_message(page: ft.Page, message_liste: ft.Column, message_entre: ft.TextField):
-    # Affichage du message
-    q = str(message_entre.value)
-    message_liste.controls.append(ft.Row([
-        ft.Container(content=ft.Text(message_entre.value), bgcolor=ft.colors.LIGHT_BLUE, padding=10, border_radius=10),
-        ft.Container(content=ft.Text("You"), bgcolor=ft.colors.LIGHT_BLUE_ACCENT, padding=5, border_radius=5, margin=ft.margin.only(left=10))
-    ], alignment=ft.MainAxisAlignment.END))
-    page.splash.visible = True
-    page.update()
-    time.sleep(5)
-    #######################
-    ## Reponse du bot #####
-    repMax = "read"
-    # Ajout de la réponse #
-    #######################
-    message_liste.controls.append(ft.Row([
-        ft.Container(content=ft.Image("static/images/max.png", width=25,height=25,fit=ft.ImageFit.CONTAIN,), bgcolor=ft.colors.WHITE, padding=5, border_radius=5, margin=ft.margin.only(left=10)),
-        ft.Container(content=ft.Text(repMax), bgcolor=ft.colors.GREY, padding=10, border_radius=10),
-    ], alignment=ft.MainAxisAlignment.START))
-    # Mise à jour de la page
-    message_entre.value = ""
-    page.splash.visible = False
-    message_entre.update()
-    page.update()
+# Fonctions
 
-    
-
-def switch_theme(page: ft.Page, is_dark_mode: bool):
+def change_theme(page: ft.Page, is_dark_mode: bool):
     page.theme_mode = "light" if page.theme_mode =="dark" else "dark"
-    page.update()
-    time.sleep(0.5)
     # SWITCH THE THEME
     if is_dark_mode:
         is_dark_mode = False
     else:
         is_dark_mode = True
-    page.splash.visible = False
-    # AND PAGE UPDATE FOR CHANGE STATE
     page.update()
 
 
 
+def fermer_recherche(Recherche: ft.SearchBar, e):
+        text = f"{e.control.data}"
+        Recherche.close_view(text)
 
+def rechercher(Recherche: ft.SearchBar , e):
+    Recherche.close_view(e.data)
+    print("Recherche en cours...")
+    print(e.data)
+    print("Recherche terminée")
+
+def changerAffichage(page: ft.Page, maladies_responsables_tab, medicaments_responsables_tab):
+    global index
+    if index == 0:
+        index = 1
+        page.remove(maladies_responsables_tab)
+        page.add(medicaments_responsables_tab)
+        page.update()
+    else:
+        index = 0
+        page.remove(medicaments_responsables_tab)
+        page.add(maladies_responsables_tab)
+        page.update()
+
+
+
+# Main
+    
 def main(page: ft.Page):
-    page.title = "J'ai quoi ?"
+    page.title = "J'ai Quoi ?"
     page.theme_mode = "dark"
-    page.splash = ft.ProgressBar(visible=False)
     
-    # Chat interface
+    # objets
 
-    #######################
-    ####### Objets ########
-    #######################
+    changeurTheme = ft.Switch(
+        adaptive=True,
+        value=True,
+        on_change=lambda e: change_theme(page, is_dark_mode),
+    )
 
-    message_liste = ft.Column(expand=1, wrap=False, scroll="always")
-    message_entre = ft.TextField(hint_text="Type a message...", on_submit=lambda e: send_message(page, message_liste, message_entre))
-    envoyerBoutton = ft.ElevatedButton("Send", on_click=lambda e: send_message(page, message_liste, message_entre,))    
+    Recherche = ft.SearchBar(
+        view_elevation=1,
+        divider_color=ft.colors.AMBER,
+        bar_hint_text="Rechercher symptomes...",
+        # Recuperer le texte de la recherche
+        on_submit=lambda e: rechercher(Recherche, e),
+        controls=[
+            ft.ListTile(title=ft.Text(f"{i}"), on_click=lambda e: fermer_recherche(Recherche,e), data=i)
+            for i in ["Acute abdomen", "Aortitis syndrome"] # On peut mettre nos exemples ici
+        ],
+    )
+
+
+    Titre = ft.AppBar(
+        leading=ft.Icon(ft.icons.LOCAL_HOSPITAL),
+        leading_width=40,
+        title=ft.Text("J'ai QUOI ?"),
+        bgcolor=ft.colors.SURFACE_VARIANT,
+        actions=[changeurTheme,]
+    )
+
+    Menu = ft.CupertinoSlidingSegmentedButton(
+        selected_index=0,
+        thumb_color=ft.colors.BLUE_400,
+        on_change=lambda e: changerAffichage(page, maladies_responsables_tab, medicaments_responsables_tab),
+        controls=[
+            ft.Text("Maladies responsables"),
+            ft.Text("Médicaments responsables"),
+        ],
+    )
+
+
+    # Conteneur qui contient une liste de maladies sous forme de boutons
+
+    maladies_responsables_listes = [("maladie 1", "source 1", "score 1"), ("maladie 2", "source 2", "score 2"), ("maladie 3", "source 3", "score 3")]
+    medicaments_responsables_listes = [("medicament 1", "source 1", "score 1"), ("medicament 2", "source 2", "score 2"), ("medicament 3", "source 3", "score 3")]
+
+    maladies_responsables_tab = ft.DataTable(
+            columns=[
+                ft.DataColumn(ft.Text("Nom de la maladie")),
+                ft.DataColumn(ft.Text("Source")),
+                ft.DataColumn(ft.Text("Score"), numeric=True),
+            ],
+            rows=[
+                ft.DataRow(
+                    cells=[
+                        ft.DataCell(ft.Text(maladie[0])),
+                        ft.DataCell(ft.Text(maladie[1])),
+                        ft.DataCell(ft.Text(maladie[2])),
+                    ]
+                )
+                for maladie in maladies_responsables_listes
+            ],
+        )
     
-    toggledarklight = ft.IconButton(on_click=lambda e: switch_theme(page, is_dark_mode),icon="dark_mode",selected_icon="light_mode",style=ft.ButtonStyle(color={"":ft.colors.BLACK,"selected":ft.colors.WHITE}))
-    entete = ft.AppBar(title=ft.Text("J'ai quoi ?",size=30,color="black"),bgcolor="Yellow",leading=ft.IconButton(icon="Chat"),actions=[toggledarklight ])
+    medicaments_responsables_tab = ft.DataTable(
+            columns=[
+                ft.DataColumn(ft.Text("Nom du médicament")),
+                ft.DataColumn(ft.Text("Source")),
+                ft.DataColumn(ft.Text("Score"), numeric=True),
+            ],
+            rows=[
+                ft.DataRow(
+                    cells=[
+                        ft.DataCell(ft.Text(medicament[0])),
+                        ft.DataCell(ft.Text(medicament[1])),
+                        ft.DataCell(ft.Text(medicament[2])),
+                    ]
+                )
+                for medicament in medicaments_responsables_listes
+            ],
+        )
 
-    #######################
+    Tableau = maladies_responsables_tab
 
-    page.add(entete, message_liste, message_entre, envoyerBoutton, )
-    page.update()
+
+    page.add(Titre, Recherche, Menu, Tableau)
+    page.update()         
+
 
 ft.app(target=main, view=ft.AppView.FLET_APP)
