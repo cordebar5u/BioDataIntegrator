@@ -1,6 +1,7 @@
 import com_drugbank as cdb # Evite les conflits entre differents imports
 import com_hpo as hpo
 import com_hpo_annotations as hpoa
+import com_omim_txt as omim
 import subprocess # Pour exécuter des commandes shell
 
 
@@ -49,6 +50,16 @@ def maladies_responsables(indication):
     return noms_maladies  
 
 def medicaments_responsables(indication):
+    '''
+    Obtenir les médicaments responsables d'une indication/symptome donnée par DrugBank
+
+    Args:
+        indication (str): indication/symptome
+    
+    Returns:
+        medicaments (list): liste des médicaments responsables
+
+    '''
 
     medicaments = []
     medicaments = cdb.rechercher_medicament_par_toxicity("data/DRUGBANK/drugbank.xml", indication)
@@ -58,7 +69,6 @@ def medicaments_responsables(indication):
         print("Les médicaments responsables de l'indication/symptome sont : ", medicaments)
     return medicaments
      
-
 
 def obtenir_nom_maladies_hpo(indication): 
     '''
@@ -81,12 +91,17 @@ def obtenir_nom_maladies_hpo(indication):
     
     for i in indication: 
         sign_id = hpo.recherche_symptome(i, False)
+        id_maladie = omim.recherche(i)
 
         for i in sign_id:
             i = i.replace("HPO:", "HP:")
             noms_maladies.extend(hpoa.search_hpo(conn, i))
-            
+
+        for i in id_maladie:
+            i = i.replace("OMIM:", "")
+            noms_maladies.extend(hpoa.search_hpo(conn, i))
     
+    noms_maladies = list(set(noms_maladies))
     return noms_maladies
 
 

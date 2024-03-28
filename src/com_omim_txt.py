@@ -110,7 +110,7 @@ def test():
 
 if __name__ == '__main__':
 	creer_index()
-	test()
+	#test()
 
 
 
