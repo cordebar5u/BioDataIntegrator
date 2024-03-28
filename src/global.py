@@ -48,7 +48,7 @@ def maladies_responsables(indication):
 
     # Travail sur le libellé préféré des maladies (Abscess)
             
-    noms_maladies = obtenir_nom_maladies_hpo(indication)
+    noms_maladies = obtenir_nom_maladies_hpo(indication)  # pas pref_label??
     print("Les maladies responsables de l'indication/symptome sont : ", noms_maladies)
     return noms_maladies  
 
@@ -63,27 +63,28 @@ def obtenir_nom_maladies_hpo(indication):
         noms_maladies (list): liste des noms des maladies responsables
 
     '''
-     
+    print("Recherche des maladies responsables de :", indication, type(indication))
     noms_maladies = []
     sign_id = []
     conn = hpoa.connect_to_db('data/HPO/hpo_annotations.sqlite')
 
     if type(indication) == str:
-        indication = [indication]
+        indication = [indication]   # Si l'indication est un string, on le met dans une liste (sinon c'est deja une liste de string (str))
+        print("Indication : ", indication, type(indication))
     
     for i in indication: 
         sign_id = hpo.recherche_symptome(i, False)
         id_maladie = omim.recherche(i)
 
-        for i in sign_id:
+        for i in sign_id:  # Premier chemin
             i = i.replace("HPO:", "HP:")
             noms_maladies.extend(hpoa.search_hpo(conn, i))
 
-        for i in id_maladie:
+        for i in id_maladie:  # Deuxième chemin
             i = i.replace("OMIM:", "")
             noms_maladies.extend(hpoa.search_hpo(conn, i))
     
-    noms_maladies = list(set(noms_maladies))
+    noms_maladies = list(set(noms_maladies))  # Supprime les doublons
     return noms_maladies
 
 def medicaments_responsables(indication):
