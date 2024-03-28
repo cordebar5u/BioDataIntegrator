@@ -13,9 +13,9 @@ def search_hpo(db, motif):
     return rows
 
 # Exemple d'utilisation
-conn = connect_to_db('data/HPO/hpo_annotations.sqlite')
+'''conn = connect_to_db('data/HPO/hpo_annotations.sqlite')
 motif = 'HP:0000008'
 
 rows = search_hpo(conn, motif)
 for row in rows:
-    print(row)
+    print(row)'''
