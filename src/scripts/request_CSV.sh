@@ -5,7 +5,6 @@ BEGIN{
     if (ARGC != 5) {
         exit 1
     }
-    # Retrieve the arguments
     tsv_fichier = ARGV[1]
     colonne = ARGV[2]
     motif = ARGV[3]
