@@ -24,7 +24,7 @@ def entrer_indication():
     medicaments_responsables(indication) 
     return indication
 
-# Prendre Acute abdomen comme exemple
+# Prendre Acute abdomen ou Enterovirus comme exemple
 def maladies_responsables(indication):
 
     noms_maladies = []
@@ -36,12 +36,15 @@ def maladies_responsables(indication):
     # Garde les identifiants uniques des concepts (CUI) dans une liste
 
     CUIs = list(set(sortie))
+    print("Les CUIs des maladies responsables de l'indication/symptome sont : ", CUIs)
     if len(CUIs) != 0:
         for CUI in CUIs:
             preferred_label.extend(execute_shell_command("request_CSV", "OMIM/omim_onto.csv", 6, CUI, 2)) # Possiblement rien
+            print(preferred_label)
     else : 
-            preferred_label = execute_shell_command("request_CSV", "OMIM/omim_onto.csv", 2, indication, 3) # Possiblement rien
-            preferred_label.extend(execute_shell_command("request_CSV", "OMIM/omim_onto.csv", 3, indication, 2)) # Possiblement rien
+            preferred_label = execute_shell_command("request_CSV", "OMIM/omim_onto.csv", 2, indication, 3) # Regarde dans les PreferredLabel directement et stocke les synonymes - Possiblement rien  
+            preferred_label.extend(execute_shell_command("request_CSV", "OMIM/omim_onto.csv", 3, indication, 2)) # Regarde dans les synonymes et stocke les PreferredLabel - Possiblement rien
+            preferred_label.extend(execute_shell_command("request_CSV", "OMIM/omim_onto.csv", 2, indication, 2)) # Regarde dans les PreferredLabel et stocke les PreferredLabel - Possiblement rien
 
     # Travail sur le libellé préféré des maladies (Abscess)
             
