@@ -30,11 +30,17 @@ class MyContentHandler(xml.sax.ContentHandler):
             self.current_name = ''
             self.current_indication = ''
 
+
 def rechercher_medicament_par_indication(fichier_xml, indication):
     handler = MyContentHandler(indication)
     xml.sax.parse(fichier_xml, handler)
+    # print("Les médicaments trouvés sont : ")
+    # for i in handler.medicaments_trouves:
+    #     print(i)
     return handler.medicaments_trouves
 
+#print("Recherche par indication en cours")
+#rechercher_medicament_par_indication("data/DRUGBANK/drugbank_modifiee.xml", "thrombocytopenia")
 
 
 class MyContentHandler2(xml.sax.ContentHandler):
@@ -78,8 +84,7 @@ def  rechercher_medicament(fichier_xml, indication, toxicity):
         medicaments = rechercher_medicament_par_indication(fichier_xml, indication)
     else:
         medicaments = rechercher_medicament_par_toxicity(fichier_xml, toxicity)
-    for medicament in medicaments:
-        print(medicament)
+    return medicaments
 
 
 #rechercher_medicament("data/DRUGBANK/drugbank.xml", "","thrombocytopenia")
@@ -102,3 +107,44 @@ def  rechercher_medicament(fichier_xml, indication, toxicity):
 #for medicament in medicaments:
 #    print(medicament)
 
+
+
+###
+
+
+# class MyContentHandler(xml.sax.ContentHandler):
+#     def __init__(self, indication_recherchee):
+#         self.indication_recherchee = indication_recherchee
+#         self.current_element = ''
+#         self.current_content = ''
+#         self.current_name = ''
+#         self.current_indication = ''
+#         self.medicaments_trouves = []
+#         self.inside_drug = False  # Pour suivre si nous sommes à l'intérieur d'une balise 'drug'
+
+#     def startElement(self, name, attrs):
+#         self.current_element = name
+#         if name == 'drug':
+#             self.current_name = ''  # Réinitialiser le nom à chaque nouvelle balise 'drug'
+#             self.current_indication = ''
+#             self.inside_drug = True  # Nous sommes à l'intérieur d'une balise 'drug'
+        
+#         self.current_content = ''  # Réinitialiser le contenu pour le prochain élément
+
+#     def characters(self, content):
+#         if self.current_element in ['name', 'indication']:
+#             print(self.current_element + "est" + content.strip() )
+#             self.current_content += content.strip()  # Accumuler le contenu seulement pour 'name' et 'indication'
+
+#     def endElement(self, name):
+#         if name == 'name' and self.inside_drug :  # Si nous sommes à l'intérieur d'une balise 'drug' et que le nom est terminé
+#             if self.current_name == "" :  # Si le nom est vide, on le met à jour
+#                 self.current_name = self.current_content
+#         elif name == 'indication' and self.inside_drug : 
+#             if self.current_indication == "" :
+#                 self.current_indication = self.current_content
+
+#         elif name == 'drug':
+#             if self.indication_recherchee in self.current_indication :
+#                 self.medicaments_trouves.append(self.current_name)
+#             self.inside_drug = False  # Sortie de la balise 'drug'

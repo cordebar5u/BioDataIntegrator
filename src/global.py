@@ -19,9 +19,16 @@ def execute_shell_command(exec, data, index, motif, afficher):
     return output_lines
 
 def entrer_indication():
-    indication = input("Veuillez entrer votre maladie (indication) : ").strip()
-    maladies_responsables(indication)
-    medicaments_responsables(indication) 
+    maladies = []
+    medicaments = []
+
+    indication = input("Veuillez entrer votre maladie (indication) : ").strip()    # Demande à l'utilisateur d'entrer une indication/symptome
+
+    maladies.extend(maladies_responsables(indication))
+    medicaments_soignant_symptomes([('thrombocytopenezrfia', 'thrombocytopenia')])  # Merci de modifier la drubank à l'aide du fichier nv_drugbank.py avant d'utiliser cette fonction
+
+    medicaments.extend(medicaments_responsables(indication)) 
+
     return indication
 
 # Prendre Acute abdomen ou Enterovirus comme exemple
@@ -89,12 +96,12 @@ def obtenir_nom_maladies_hpo(indication):
     noms_maladies = list(set(noms_maladies))  # Supprime les doublons
     return noms_maladies
 
-def medicaments_responsables(indication):
+def medicaments_responsables(indication):    # attention ici il faut récupérer le preferred label de la maladie
     '''
     Obtenir les médicaments responsables d'une indication/symptome donnée 
 
     Args:
-        indication (str): indication/symptome
+        indication(toxicity) (str): indication/symptome
     
     Returns:
         medicaments (list): liste des médicaments responsables
@@ -102,7 +109,7 @@ def medicaments_responsables(indication):
     '''
 
     medicaments = []
-    medicaments = obtenir_medicaments_responsables_drugbank(indication)
+    medicaments = obtenir_medicaments_responsables_drugbank(indication)  # indication ici c'est toxicity dans la fonction
     #medicaments.extend(obtenir_medicaments_responsables_atc(indication))
 
     if medicaments == []:
@@ -124,7 +131,7 @@ def obtenir_medicaments_responsables_drugbank(indication):
     '''
 
     medicaments = []
-    medicaments = cdb.rechercher_medicament_par_toxicity("data/DRUGBANK/drugbank.xml", indication)
+    medicaments = cdb.rechercher_medicament("data/DRUGBANK/drugbank_modifiee.xml", "", indication)  # Recherche les médicaments responsables de l'indication/symptome
     return medicaments
 
 def obtenir_medicaments_responsables_atc(indication):
@@ -160,6 +167,35 @@ def obtenir_medicaments_responsables_atc(indication):
             print("Aucun médicament trouvé ayant ce code MedDra dans STITCH.")
     else: 
         print("Aucun médicament trouvé ayant pour effet secondaire l'indication/symptome dans MedDra.")
+    return medicaments
+
+
+def medicaments_soignant_symptomes(maladies):
+    '''
+    Obtenir les médicaments soignant une indication/symptome donnée
+
+    Args:
+        indication (str): indication/symptome
+    
+    Returns:
+        medicaments (list): liste des médicaments soignant
+
+    '''
+    medicaments = []
+
+    fichier_xml = "data/DRUGBANK/drugbank_modifiee.xml"
+
+    medicaments.extend(cdb.rechercher_medicament(fichier_xml, maladies[0][1], ""))  # Recherche les médicaments soignant les maladies
+    medicaments = list(set(medicaments))  # Supprime les doublons
+    
+    if medicaments == []:
+        print("Aucun médicament trouvé soignant l'indication/symptome.")
+
+    else:
+        print("\n\n\nLes médicaments soignant les maladies sont : ")
+        for i in medicaments:
+            print(i)
+    print("\n\n\n")
     return medicaments
 
 # Exécute la fonction principale
