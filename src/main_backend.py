@@ -72,6 +72,9 @@ def rechercherDonnee(indication):
 
     liste_indications = parser_indication(indication)  # Parse l'indication/symptome
 
+    if indication == "":
+        return [], []
+    
     if len(liste_indications) == 0:
         print("Problème lors du parsing de l'indication/symptome.")
         return

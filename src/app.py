@@ -7,9 +7,8 @@ import main_backend as mb
 is_dark_mode = True
 
 index = 0
-maladies_responsables_listes = [("maladie 1", "source 1", "score 1"), ("maladie 2", "source 2", "score 2"), ("maladie 3", "source 3", "score 3")]
-medicaments_responsables_listes = [("medicament 1", "source 1", "score 1"), ("medicament 2", "source 2", "score 2"), ("medicament 3", "source 3", "score 3")]
-
+maladies_responsables_listes = []
+medicaments_responsables_listes = []
 
 historique = ["Acute abdomen", "Aortitis syndrome"]
 
@@ -30,44 +29,6 @@ def fermer_recherche(Recherche: ft.SearchBar, e):
         text = f"{e.control.data}"
         Recherche.close_view(text)
 
-def rechercher(page, Recherche: ft.SearchBar , e):
-    global historique
-    Recherche.close_view(e.data)
-    print("Recherche en cours...")
-    print(e.data)
-    indice = -1
-    taille = len(historique)
-    for i in range(taille):
-        if historique[i] == e.data:
-            indice = i
-            break
-    if indice != -1:
-        historique.pop(indice)
-        historique = [e.data] + historique
-    else: 
-        if taille == 5:
-            historique = [e.data] + historique[:4]
-        else:
-            historique = [e.data] + historique
-    Recherche.controls = [ft.ListTile(title=ft.Text(f"{i}"), on_click=lambda e: fermer_recherche(Recherche,e), data=i)
-        for i in historique # On peut mettre nos exemples ici
-    ]
-    print(historique)
-    print("Recherche terminée")
-    page.update()
-
-def changerAffichage(page: ft.Page, maladies_responsables_tab, medicaments_responsables_tab):
-    global index
-    if index == 0:
-        index = 1
-        page.remove(maladies_responsables_tab)
-        page.add(medicaments_responsables_tab)
-        page.update()
-    else:
-        index = 0
-        page.remove(medicaments_responsables_tab)
-        page.add(maladies_responsables_tab)
-        page.update()
 
 # Main
     
@@ -88,7 +49,7 @@ def main(page: ft.Page):
         divider_color=ft.colors.AMBER,
         bar_hint_text="Rechercher symptomes...",
         # Recuperer le texte de la recherche
-        on_submit=lambda e: rechercher(page, Recherche, e),
+        on_submit=lambda e: rechercher(page, Recherche, e,maladies_responsables_tab, medicaments_responsables_tab),
         controls=[
             ft.ListTile(title=ft.Text(f"{i}"), on_click=lambda e: fermer_recherche(Recherche,e), data=i)
             for i in historique # On peut mettre nos exemples ici
@@ -115,6 +76,90 @@ def main(page: ft.Page):
     )
     #######
 
+    def changerAffichage(page: ft.Page, maladies_responsables_tab, medicaments_responsables_tab):
+        global index
+        if index == 0:
+            index = 1
+            page.controls.pop()
+            medicaments_responsables_tab = ft.DataTable(
+                columns=[
+                    ft.DataColumn(ft.Text("Nom du médicament")),
+                    ft.DataColumn(ft.Text("Source")),
+                    # ft.DataColumn(ft.Text("Score"), numeric=True),
+                ],
+                rows=[
+                    ft.DataRow(
+                        cells=[
+                            ft.DataCell(ft.ElevatedButton(medicament[1], on_click=show_bs)),
+                            ft.DataCell(ft.Text(medicament[0])),
+                            # ft.DataCell(ft.Text(medicament[2])),
+                        ]
+                    )
+                    for medicament in medicaments_responsables_listes
+                ],
+            )
+            page.add(medicaments_responsables_tab)
+            page.update()
+        else:
+            index = 0
+            page.controls.pop()
+            maladies_responsables_tab = ft.DataTable(
+                columns=[
+                    ft.DataColumn(ft.Text("Nom de la maladie")),
+                    ft.DataColumn(ft.Text("Source")),
+                    # ft.DataColumn(ft.Text("Score"), numeric=True),
+                ],
+                rows=[
+                    ft.DataRow(
+                        cells=[
+                            ft.DataCell(ft.ElevatedButton(maladie[1], on_click=show_bs)),
+                            ft.DataCell(ft.Text(maladie[0])),
+                            # ft.DataCell(ft.Text(maladie[2])),
+                        ]
+                    )
+                    for maladie in maladies_responsables_listes
+                ],
+            )
+            page.add(maladies_responsables_tab)
+            page.update()
+
+    def rechercher(page, Recherche: ft.SearchBar , e, maladies_responsables_tab, medicaments_responsables_tab):
+        global historique
+        global index
+        Recherche.close_view(e.data)
+        print("Recherche en cours...")
+        #chargement
+        global maladies_responsables_listes
+        global medicaments_responsables_listes
+        maladies_responsables_listes, medicaments_responsables_listes = mb.rechercherDonnee(e.data)
+        if index == 0:
+            index = 1
+            changerAffichage(page, maladies_responsables_tab, medicaments_responsables_tab)
+        else:
+            index = 0
+            changerAffichage(page, maladies_responsables_tab, medicaments_responsables_tab)
+        indice = -1
+        
+        taille = len(historique)
+        for i in range(taille):
+            if historique[i] == e.data:
+                indice = i
+                break
+        if indice != -1:
+            historique.pop(indice)
+            historique = [e.data] + historique
+        else: 
+            if taille == 5:
+                historique = [e.data] + historique[:4]
+            else:
+                historique = [e.data] + historique
+        Recherche.controls = [ft.ListTile(title=ft.Text(f"{i}"), on_click=lambda e: fermer_recherche(Recherche,e), data=i)
+            for i in historique # On peut mettre nos exemples ici
+        ]
+        print("Recherche terminée")
+        page.update()
+
+
     def bs_dismissed(e):
         print("Dismissed!")
 
@@ -137,7 +182,7 @@ def main(page: ft.Page):
             ),
             padding=10,
         ),
-        open=True,
+        open=False,
         on_dismiss=bs_dismissed,
     )
     page.overlay.append(bs)
@@ -146,6 +191,9 @@ def main(page: ft.Page):
     #######
 
     # Conteneur qui contient une liste de maladies sous forme de boutons
+
+
+
 
     maladies_responsables_tab = ft.DataTable(
             columns=[
@@ -156,8 +204,8 @@ def main(page: ft.Page):
             rows=[
                 ft.DataRow(
                     cells=[
-                        ft.DataCell(ft.ElevatedButton(maladie[0], on_click=show_bs)),
-                        ft.DataCell(ft.Text(maladie[1])),
+                        ft.DataCell(ft.ElevatedButton(maladie[1], on_click=show_bs)),
+                        ft.DataCell(ft.Text(maladie[0])),
                         # ft.DataCell(ft.Text(maladie[2])),
                     ]
                 )
@@ -174,8 +222,8 @@ def main(page: ft.Page):
             rows=[
                 ft.DataRow(
                     cells=[
-                        ft.DataCell(ft.ElevatedButton(medicament[0], on_click=show_bs)),
-                        ft.DataCell(ft.Text(medicament[1])),
+                        ft.DataCell(ft.ElevatedButton(medicament[1], on_click=show_bs)),
+                        ft.DataCell(ft.Text(medicament[0])),
                         # ft.DataCell(ft.Text(medicament[2])),
                     ]
                 )
