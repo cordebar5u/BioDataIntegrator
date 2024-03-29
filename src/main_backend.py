@@ -32,14 +32,11 @@ def entrer_indication():
         for i in range(1, len(liste_indications)):
             nouvelles_maladies_responsables = mal.maladies_responsables(liste_indications[i])
             nouveaux_medicaments_responsables = med.medicaments_responsables(liste_indications[i])
-            #nouveaux_medicaments_soignant = medicaments_soignant_symptomes(nouvelles_maladies_responsables)
 
             maladies = list(set(maladies) & set(nouvelles_maladies_responsables))
             medicaments = list(set(medicaments) & set(nouveaux_medicaments_responsables))
-            #medicaments_soignant = list(set(medicaments_soignant) & set(nouveaux_medicaments_soignant))
     
     maladies = med_soignant.medicaments_soignant_symptomes(maladies)  # Merci de modifier la drubank à l'aide du fichier nv_drugbank.py avant d'utiliser cette fonction
-    medicaments = med_soignant.medicaments_soignant_symptomes(medicaments)  # Merci de modifier la drubank à l'aide du fichier nv_drugbank.py avant d'utiliser cette fonction
     
     print("\n\n\nLes maladies responsables de l'indication/symptome sont à la fin : ", maladies)
     print("\n\n\nLes médicaments responsables de l'indication/symptome sont à la fin: ", medicaments)

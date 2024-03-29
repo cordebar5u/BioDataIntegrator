@@ -25,9 +25,6 @@ def medicaments_responsables(indication_initiale):    # attention ici il faut r√
     
     for symptome in liste_symptome:
         medicaments.extend(obtenir_medicaments_responsables_drugbank(symptome))  # indication ici c'est toxicity dans la fonction
-        print(medicaments)
-
-    medicaments = list(set(medicaments))  # Supprime les doublons
 
     return medicaments
 
@@ -45,6 +42,7 @@ def obtenir_medicaments_responsables_drugbank(indication):
 
     medicaments = []
     medicaments = cdb.rechercher_medicament("data/DRUGBANK/drugbank_modifiee.xml", "", indication)  # Recherche les m√©dicaments responsables de l'indication/symptome
+    medicaments = [['DrugBank', medicament] for medicament in medicaments]
     return medicaments
 
 def obtenir_medicaments_responsables_atc(indication):
