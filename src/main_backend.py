@@ -61,6 +61,39 @@ def parser_indication(indication):
 
     return liste_indications
 
+def rechercherDonnee(indication):
+
+    maladies = []
+    medicaments = []
+    medicaments_soignant = []
+    nouvelles_maladies_responsables = []
+    nouveaux_medicaments_responsables = []
+    nouveaux_medicaments_soignant = []
+
+    liste_indications = parser_indication(indication)  # Parse l'indication/symptome
+
+    if len(liste_indications) == 0:
+        print("Problème lors du parsing de l'indication/symptome.")
+        return
+    
+    # print("Les indications/symptomes sont : ", liste_indications)
+
+    maladies.extend(mal.maladies_responsables(liste_indications[0])) # Recherche les maladies responsables de l'indication/symptome 
+    medicaments.extend(med.medicaments_responsables(liste_indications[0])) # Recherche les médicaments responsables de l'indication/symptome
+    if len(liste_indications)!=1:
+        for i in range(1, len(liste_indications)):
+            nouvelles_maladies_responsables = mal.maladies_responsables(liste_indications[i])
+            nouveaux_medicaments_responsables = med.medicaments_responsables(liste_indications[i])
+
+            maladies = list(set(maladies) & set(nouvelles_maladies_responsables))
+            medicaments = list(set(medicaments) & set(nouveaux_medicaments_responsables))
+    
+    maladies = med_soignant.medicaments_soignant_symptomes(maladies)  # Merci de modifier la drubank à l'aide du fichier nv_drugbank.py avant d'utiliser cette fonction
+    
+    print("\n\n\nLes maladies responsables de l'indication/symptome sont à la fin : ", maladies)
+    print("\n\n\nLes médicaments responsables de l'indication/symptome sont à la fin: ", medicaments)
+
+    return maladies, medicaments
 
 # Exécute la fonction principale
 if __name__ == "__main__":
