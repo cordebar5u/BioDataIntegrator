@@ -71,7 +71,7 @@ class DrugBank {
 class MedDra_all_indications {
     + Code_MedDra
     + CUI
-    + Symptomes
+    + Symptomes-Maladies
 }
 
 class MedDra_freq{
@@ -105,10 +105,8 @@ ATC::nom_medicament -- Global::Médicaments
 MedDra_all_se::code_MedDra -- Stitch::code_MedDra
 Stitch::code_ATC-- ATC::code_ATC 
 MedDra_freq::Pourcentage -- Global::Score
-MedDra_all_indications::CUI -- MedDra_freq::CUI
-
-MedDra_freq::CUI -- OMIM_Onto::CUI
-MedDra_all_se::CUI -- OMIM_Onto::CUI
+MedDra_all_se::CUI -- MedDra_freq::CUI
+MedDra_all_indications::Symptomes -- Global::Maladies
 
 
 DrugBank::name -- Global::Médicaments_soignants
