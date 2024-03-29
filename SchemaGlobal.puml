@@ -107,20 +107,3 @@ MedDRA_all_se::code_MedDRA --> Stitch::code_MedDRA
 Stitch::code_ATC--> ATC::code_ATC 
 MeDra_freq::Pourcentage --> Global::Score
 MedDra_all_indications::CUI --> MeDra_freq::CUI
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
