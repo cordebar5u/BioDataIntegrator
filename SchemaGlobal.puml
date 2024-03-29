@@ -8,19 +8,20 @@ class Global{
     + Symptomes
     + Maladies
     + Médicaments
+    + Médicaments_soignants
     + Source
     + (Score)
 }
 
-class MedDRA_all_se {
-    + code_MedDRA : CID1xxxxxxxx
-    + (CUI)
+class MedDra_all_se {
+    + code_MedDra : CID1xxxxxxxx
+    + CUI
     + nom_symptome
 }
 
 class Stitch{
-    + code_MedDRA
-    + (CUI : CIDs)
+    + code_MedDra 
+    + CUI : CIDs
     + code_ATC
 }
 
@@ -54,56 +55,61 @@ class OMIM{
     + CS : nom_symptome 
 }
 
-class MedDRA {
+class MedDra {
     + CUI
     + nom_symptome
 }
 
 class DrugBank {
-    + nom_medicament
+    + name : nom_medicament
     + indication : Maladies
     + toxicity : Effets secondaires
-    + Synonyme_medicament
-    + ATC
+    + synonym : synonyme_medicament
 }
 
 
 class MedDra_all_indications {
-    + Code_MedDRA
+    + Code_MedDra
     + CUI
     + Symptomes
 }
 
-class MeDra_freq{
-    + Code_MedDRA
+class MedDra_freq{
+    + Code_MedDra
     + CUI
     + Pourcentage (Score)
     + Symptomes  
 }
 
-Global::Symptomes --> HPO_OBO::nom_symptome
-Global::Symptomes --> MedDRA::nom_symptome
-Global::Symptomes --> OMIM::nom_symptome
-Global::Maladies --> DrugBank::indication
-Global::Symptomes --> DrugBank::toxicity
-Global::Symptomes --> MedDra_all_indications::Symptomes
-Global::Symptomes --> MedDRA_all_se::nom_symptome
+Global::Symptomes -- HPO_OBO::nom_symptome
+Global::Symptomes -- MedDra::nom_symptome
+Global::Symptomes -- OMIM::nom_symptome
+Global::Maladies -- DrugBank::indication
+Global::Médicaments -- DrugBank::toxicity
+Global::Symptomes -- MedDra_all_indications::Symptomes
+Global::Symptomes -- MedDra_all_se::nom_symptome
 
 
-HPO_OBO::id --> HPO_Annotations::sign_id
-HPO_Annotations::nom_maladie --> Global::Maladies
-
-DrugBank::nom_medicament --> Global::Médicaments
-
-MedDRA::CUI-->OMIM_Onto::CUI
-OMIM_Onto::Synonyms--> Global::Symptomes
-
-OMIM::nom_maladie-->Global::Maladies
-OMIM::id_maladie-->HPO_Annotations::id_maladie
+HPO_OBO::id -- HPO_Annotations::sign_id
+HPO_Annotations::nom_maladie -- Global::Maladies
 
 
-ATC::nom_medicament --> Global::Médicaments
-MedDRA_all_se::code_MedDRA --> Stitch::code_MedDRA
-Stitch::code_ATC--> ATC::code_ATC 
-MeDra_freq::Pourcentage --> Global::Score
-MedDra_all_indications::CUI --> MeDra_freq::CUI
+MedDra::CUI--OMIM_Onto::CUI
+OMIM_Onto::Synonyms-- Global::Symptomes
+
+OMIM::nom_maladie--Global::Maladies
+OMIM::id_maladie--HPO_Annotations::id_maladie
+
+
+ATC::nom_medicament -- Global::Médicaments
+MedDra_all_se::code_MedDra -- Stitch::code_MedDra
+Stitch::code_ATC-- ATC::code_ATC 
+MedDra_freq::Pourcentage -- Global::Score
+MedDra_all_indications::CUI -- MedDra_freq::CUI
+
+MedDra_freq::CUI -- OMIM_Onto::CUI
+MedDra_all_se::CUI -- OMIM_Onto::CUI
+
+
+DrugBank::name -- Global::Médicaments_soignants
+@enduml

@@ -23,7 +23,7 @@ class MyContentHandler(xml.sax.ContentHandler):
             self.current_indication = self.current_content
 
         if name == 'drug':
-            if self.indication_recherchee in self.current_indication:
+            if self.indication_recherchee.lower() in self.current_indication.lower():
                 self.medicaments_trouves.append(self.current_name)
                             
             # Réinitialiser les variables pour le prochain élément <drug>
@@ -87,8 +87,9 @@ def  rechercher_medicament(fichier_xml, indication, toxicity):
     return medicaments
 
 
-#rechercher_medicament("data/DRUGBANK/drugbank.xml", "","thrombocytopenia")
-#rechercher_medicament("data/DRUGBANK/drugbank.xml","", "Renal failure")
+
+#print(rechercher_medicament("data/DRUGBANK/drugbank_modifiee.xml", "Malaria",""))
+#rechercher_medicament("data/DRUGBANK/drugbank_modifiee.xml","", "Renal failure")
 
 
 
