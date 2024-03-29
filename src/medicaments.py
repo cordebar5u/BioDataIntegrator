@@ -25,6 +25,7 @@ def medicaments_responsables(indication_initiale):    # attention ici il faut r�
     
     for symptome in liste_symptome:
         medicaments.extend(obtenir_medicaments_responsables_drugbank(symptome))  # indication ici c'est toxicity dans la fonction
+        medicaments.extend(obtenir_medicaments_responsables_atc(symptome))  # indication ici c'est toxicity dans la fonction
 
     return medicaments
 
@@ -63,19 +64,26 @@ def obtenir_medicaments_responsables_atc(indication):
 
     code_medDRa = execute_shell_command("request_TSV", "SIDER/meddra_all_se.tsv", 6, indication, 2)
     code_medDRa = list(set(code_medDRa))
-    print(code_medDRa)
 
     if code_medDRa != []:
         for code in code_medDRa:
-            code[3].replace("0", "s")
-            code_ATC.extend(execute_shell_command("request_TSV", "STITCH\ -\ ATC/chemical_atc.tsv", 1, code, 4))
+            code = code[:3] + 's' + code[4:]
+            code_ATC.extend(execute_shell_command("request_TSV", "STITCH\ -\ ATC/chemical_atc.tsv", 2, code, 4))
             code_ATC = list(set(code_ATC))
-            print(code_ATC)
         if code_ATC != []:
             for code in code_ATC:
                 medicaments.extend(execute_shell_command("request_KEG", "STITCH\ -\ ATC/br08303.keg", 2, code, 3))
         else: 
-            print("Aucun médicament trouvé ayant ce code MedDra dans STITCH.")
+            print("Aucun médicament trouvé ayant ces codes MedDra dans STITCH.")
     else: 
         print("Aucun médicament trouvé ayant pour effet secondaire l'indication/symptome dans MedDra.")
+    
+    medicaments = list(set(medicaments))
+
+    medicaments = [['ATC', medicament] for medicament in medicaments]
     return medicaments
+
+if __name__ == "__main__":
+    print(medicaments_responsables("Injection site necrosis"))
+    #CID000439260
+
