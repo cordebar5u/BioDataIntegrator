@@ -19,46 +19,64 @@ def execute_shell_command(exec, data, index, motif, afficher):
     return output_lines
 
 def entrer_indication():
+
     maladies = []
     medicaments = []
+    medicaments_soignant = []
+    nouvelles_maladies_responsables = []
+    nouveaux_medicaments_responsables = []
+    nouveaux_medicaments_soignant = []
 
     indication = input("Veuillez entrer votre maladie (indication) : ").strip()    # Demande à l'utilisateur d'entrer une indication/symptome
 
-    maladies.extend(maladies_responsables(indication))
+    if indication == "":
+        print("Indication/symptome non valide.")
+        return
+
+    liste_indications = parser_indication(indication)  # Parse l'indication/symptome
+
+    if len(liste_indications) == 0:
+        print("Problème lors du parsing de l'indication/symptome.")
+        return
+    
+    print("Les indications/symptomes sont : ", liste_indications)
+
+    maladies.extend(maladies_responsables(liste_indications[0])) # Recherche les maladies responsables de l'indication/symptome 
+    medicaments.extend(medicaments_responsables(liste_indications[0])) # Recherche les médicaments responsables de l'indication/symptome
     medicaments_soignant_symptomes([('thrombocytopenezrfia', 'thrombocytopenia')])  # Merci de modifier la drubank à l'aide du fichier nv_drugbank.py avant d'utiliser cette fonction
 
-    medicaments.extend(medicaments_responsables(indication)) 
+    if len(liste_indications)!=1:
+        for i in range(1, len(liste_indications)):
+            nouvelles_maladies_responsables = maladies_responsables(liste_indications[i])
+            nouveaux_medicaments_responsables = medicaments_responsables(liste_indications[i])
+            #nouveaux_medicaments_soignant = medicaments_soignant_symptomes(nouvelles_maladies_responsables)
+
+            maladies = list(set(maladies) & set(nouvelles_maladies_responsables))
+            medicaments = list(set(medicaments) & set(nouveaux_medicaments_responsables))
+            #medicaments_soignant = list(set(medicaments_soignant) & set(nouveaux_medicaments_soignant))
+    
+    print("\n\n\nLes maladies responsables de l'indication/symptome sont à la fin : ", maladies)
+    print("\n\n\nLes médicaments responsables de l'indication/symptome sont à la fin: ", medicaments)
 
     return indication
 
 # Prendre Acute abdomen ou Enterovirus comme exemple
-def maladies_responsables(indication):
+def maladies_responsables(indication_initiale):
 
     noms_maladies = []
-    preferred_label = []
-    CUIs = []
+    liste_symptome = [indication_initiale]
 
-    sortie = execute_shell_command("request_TSV", "SIDER/meddra.tsv", 4, indication, 1)
+    #A MODIFIER AVEC LABEL PAR GESTION DE LISTE
+    liste_symptome = obtenir_synonyme_label(indication_initiale)  # Récupère les synonymes de l'indication/symptome
 
-    # Garde les identifiants uniques des concepts (CUI) dans une liste
+    if (type(liste_symptome) == str):
+        liste_symptome = [liste_symptome]
+    
+    for symptome in liste_symptome:
+        noms_maladies = obtenir_nom_maladies_hpo(symptome)  # anciennement indication à la place de preferred_label
+        
+    print("Les maladies responsables de l'indication/symptome sont : ", noms_maladies)
 
-    CUIs = list(set(sortie))
-    print("Les CUIs des maladies responsables de l'indication/symptome sont : ", CUIs)
-    if len(CUIs) != 0:
-        for CUI in CUIs:
-            preferred_label.extend(execute_shell_command("request_CSV", "OMIM/omim_onto.csv", 6, CUI, 2)) # Possiblement rien
-            print(preferred_label)
-    else : 
-            preferred_label = execute_shell_command("request_CSV", "OMIM/omim_onto.csv", 2, indication, 3) # Regarde dans les PreferredLabel directement et stocke les synonymes - Possiblement rien  
-            preferred_label.extend(execute_shell_command("request_CSV", "OMIM/omim_onto.csv", 3, indication, 2)) # Regarde dans les synonymes et stocke les PreferredLabel - Possiblement rien
-            preferred_label.extend(execute_shell_command("request_CSV", "OMIM/omim_onto.csv", 2, indication, 2)) # Regarde dans les PreferredLabel et stocke les PreferredLabel - Possiblement rien
-
-    # Travail sur le libellé préféré des maladies (Abscess)
-            
-    noms_maladies = obtenir_nom_maladies_hpo(preferred_label)  # anciennement indication à la place de preferred_label
-    print("Les maladies responsables de l'indication/symptome sont : ")
-    for i in noms_maladies:
-        print(i)
     return noms_maladies  
 
 def obtenir_nom_maladies_hpo(indication): 
@@ -72,14 +90,12 @@ def obtenir_nom_maladies_hpo(indication):
         noms_maladies (list): liste des noms des maladies responsables
 
     '''
-    print("Recherche des maladies responsables de :", indication, type(indication))
     noms_maladies = []
     sign_id = []
     conn = hpoa.connect_to_db('data/HPO/hpo_annotations.sqlite')
 
     if type(indication) == str:
         indication = [indication]   # Si l'indication est un string, on le met dans une liste (sinon c'est deja une liste de string (str))
-        print("Indication : ", indication, type(indication))
     
     for i in indication: 
         sign_id = hpo.recherche_symptome(i, False)   # Deuxième argument pour la verbose
@@ -96,7 +112,7 @@ def obtenir_nom_maladies_hpo(indication):
     noms_maladies = list(set(noms_maladies))  # Supprime les doublons
     return noms_maladies
 
-def medicaments_responsables(indication):    # attention ici il faut récupérer le preferred label de la maladie
+def medicaments_responsables(indication_initiale):    # attention ici il faut récupérer le preferred label de la maladie
     '''
     Obtenir les médicaments responsables d'une indication/symptome donnée 
 
@@ -107,15 +123,21 @@ def medicaments_responsables(indication):    # attention ici il faut récupérer
         medicaments (list): liste des médicaments responsables
 
     '''
-
     medicaments = []
-    medicaments = obtenir_medicaments_responsables_drugbank(indication)  # indication ici c'est toxicity dans la fonction
-    #medicaments.extend(obtenir_medicaments_responsables_atc(indication))
+    liste_symptome = [indication_initiale]
 
-    if medicaments == []:
-        print("Aucun médicament trouvé ayant pour effet secondaire l'indication/symptome.")
-    else:
-        print("Les médicaments responsables de l'indication/symptome sont : ", medicaments)
+    #A MODIFIER AVEC LABEL PAR GESTION DE LISTE
+    liste_symptome = obtenir_synonyme_label(indication_initiale)  # Récupère les synonymes de l'indication/symptome 
+
+    if (type(liste_symptome) == str):
+        liste_symptome = [liste_symptome]
+    
+    for symptome in liste_symptome:
+        medicaments.extend(obtenir_medicaments_responsables_drugbank(symptome))  # indication ici c'est toxicity dans la fonction
+        print(medicaments)
+
+    medicaments = list(set(medicaments))  # Supprime les doublons
+
     return medicaments
 
 def obtenir_medicaments_responsables_drugbank(indication):
@@ -198,37 +220,57 @@ def medicaments_soignant_symptomes(maladies):
     print("\n\n\n")
     return medicaments
 
+def parser_indication(indication):
+    '''
+    Parser l'indication/symptome donnée par l'utilisateur
+
+    Args:
+        indication (str): indications/symptomes entrés par l'utilisateur
+    
+    Returns:
+        liste_indications (list): liste des indications/symptomes
+
+    '''
+
+    liste_indications = []
+    liste_indications = indication.split("ET")  # Sépare les indications/symptomes par des virgules
+    liste_indications = [i.strip() for i in liste_indications]  # Enlève les espaces inutiles
+
+    return liste_indications
+
+def obtenir_synonyme_label(indication):
+    ''' 
+    Obtenir les synonymes d'une indication/symptome donnée
+
+    Args:
+        indication (str): indication/symptome
+    
+    Returns:
+        synonymes (list): liste des synonymes
+
+    '''
+    '''synonymes = [indication]
+    CUIs = []
+
+    sortie = execute_shell_command("request_TSV", "SIDER/meddra.tsv", 4, indication, 1)
+
+    # Garde les identifiants uniques des concepts (CUI) dans une liste
+
+    CUIs = list(set(sortie))
+    print("Les CUIs des maladies responsables de l'indication/symptome sont : ", CUIs)
+    if len(CUIs) != 0:
+        for CUI in CUIs:
+            preferred_label.extend(execute_shell_command("request_CSV", "OMIM/omim_onto.csv", 6, CUI, 2)) # Possiblement rien
+            print(preferred_label)
+    else : 
+            preferred_label = execute_shell_command("request_CSV", "OMIM/omim_onto.csv", 2, indication, 3) # Regarde dans les PreferredLabel directement et stocke les synonymes - Possiblement rien  
+            preferred_label.extend(execute_shell_command("request_CSV", "OMIM/omim_onto.csv", 3, indication, 2)) # Regarde dans les synonymes et stocke les PreferredLabel - Possiblement rien
+            preferred_label.extend(execute_shell_command("request_CSV", "OMIM/omim_onto.csv", 2, indication, 2)) # Regarde dans les PreferredLabel et stocke les PreferredLabel - Possiblement rien
+'''
+    # Travail sur le libellé préféré des maladies (Abscess)
+
+    return indication
+
 # Exécute la fonction principale
 if __name__ == "__main__":
     entrer_indication()
-
-
-
-
-
-
-
-
-
-
-#import os
-# fonction pour executer un script shell (.sh) avec des parametres
-# def execute_shell_command(exec, data, index, motif):    
-#     requete = "src/scripts/" + exec +".sh data/" + data + " "+ str(index) + " '" + motif + "'"
-#     os.system(requete)
-
-
-# def maladies_responsables():
-#     indication = input("Veuillez entrer votre maladie (indication) : ").strip()
-    
-#     print(execute_shell_command("request_TSV", "SIDER/meddra.tsv", 4, indication))
-
-#src/scripts/request_TSV.sh data/SIDER/meddra.tsv  4 'Acute abdomen'
-
-#a = execute_shell_command("request_TSV", "SIDER/meddra.tsv", 4, "Acute abdomen")
-# Vous pouvez étendre cette fonction pour demander également la toxicité si nécessaire.
-
-# Appel de la fonction pour rechercher des médicaments
-# Assurez-vous que le fichier XML est correctement spécifié ici
-#fichier_xml = "data/DRUGBANK/drugbank.xml"
-#cdb.rechercher_medicament(fichier_xml, indication, "")
