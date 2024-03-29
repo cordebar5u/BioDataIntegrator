@@ -1,5 +1,6 @@
 import time
 import flet as ft
+import main_backend as mb
 
 # Variables
 
@@ -68,8 +69,6 @@ def changerAffichage(page: ft.Page, maladies_responsables_tab, medicaments_respo
         page.add(maladies_responsables_tab)
         page.update()
 
-
-
 # Main
     
 def main(page: ft.Page):
@@ -114,11 +113,40 @@ def main(page: ft.Page):
             ft.Text("Médicaments responsables"),
         ],
     )
+    #######
 
+    def bs_dismissed(e):
+        print("Dismissed!")
+
+    def show_bs(e):
+        bs.open = True
+        bs.update()
+
+    def close_bs(e):
+        bs.open = False
+        bs.update()
+
+    bs = ft.BottomSheet(
+        ft.Container(
+            ft.Column(
+                [
+                    ft.Text("This is sheet's content!"),
+                    ft.ElevatedButton("Close bottom sheet", on_click=close_bs),
+                ],
+                tight=True,
+            ),
+            padding=10,
+        ),
+        open=True,
+        on_dismiss=bs_dismissed,
+    )
+    page.overlay.append(bs)
+
+
+    #######
 
     # Conteneur qui contient une liste de maladies sous forme de boutons
 
-    
     maladies_responsables_tab = ft.DataTable(
             columns=[
                 ft.DataColumn(ft.Text("Nom de la maladie")),
@@ -128,7 +156,7 @@ def main(page: ft.Page):
             rows=[
                 ft.DataRow(
                     cells=[
-                        ft.DataCell(ft.Text(maladie[0])),
+                        ft.DataCell(ft.ElevatedButton(maladie[0], on_click=show_bs)),
                         ft.DataCell(ft.Text(maladie[1])),
                         # ft.DataCell(ft.Text(maladie[2])),
                     ]
@@ -146,7 +174,7 @@ def main(page: ft.Page):
             rows=[
                 ft.DataRow(
                     cells=[
-                        ft.DataCell(ft.Text(medicament[0])),
+                        ft.DataCell(ft.ElevatedButton(medicament[0], on_click=show_bs)),
                         ft.DataCell(ft.Text(medicament[1])),
                         # ft.DataCell(ft.Text(medicament[2])),
                     ]

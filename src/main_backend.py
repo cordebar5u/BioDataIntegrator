@@ -42,8 +42,8 @@ def entrer_indication():
     print("Les indications/symptomes sont : ", liste_indications)
 
     maladies.extend(maladies_responsables(liste_indications[0])) # Recherche les maladies responsables de l'indication/symptome 
-    medicaments.extend(medicaments_responsables(liste_indications[0])) # Recherche les médicaments responsables de l'indication/symptome
-    medicaments_soignant_symptomes([('thrombocytopenezrfia', 'thrombocytopenia')])  # Merci de modifier la drubank à l'aide du fichier nv_drugbank.py avant d'utiliser cette fonction
+    #medicaments.extend(medicaments_responsables(liste_indications[0])) # Recherche les médicaments responsables de l'indication/symptome
+    #medicaments_soignant_symptomes([('thrombocytopenezrfia', 'thrombocytopenia')])  # Merci de modifier la drubank à l'aide du fichier nv_drugbank.py avant d'utiliser cette fonction
 
     if len(liste_indications)!=1:
         for i in range(1, len(liste_indications)):
