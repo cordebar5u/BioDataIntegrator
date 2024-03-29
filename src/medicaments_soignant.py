@@ -30,6 +30,7 @@ def medicaments_soignant_symptomes(maladies):
         
         medicaments = [] # Réinitialise la liste des médicaments
 
+    return retour
 
     # if not exist_medicaments:
     #     print("Aucun médicament trouvé soignant l'indication/symptome.")
