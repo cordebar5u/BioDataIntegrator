@@ -2,6 +2,7 @@ import com_hpo as hpo
 import com_hpo_annotations as hpoa
 import com_omim_txt as omim
 import synonymes as syn
+from shell_commande import execute_shell_command 
 
 # Prendre Acute abdomen ou Enterovirus comme exemple
 def maladies_responsables(indication_initiale):
@@ -16,11 +17,23 @@ def maladies_responsables(indication_initiale):
         liste_symptome = [liste_symptome]
     
     for symptome in liste_symptome:
-        noms_maladies = obtenir_nom_maladies_hpo(symptome)  # anciennement indication à la place de preferred_label
-        
-    print("Les maladies responsables de l'indication/symptome sont : ", noms_maladies)
+        noms_maladies.extend(obtenir_nom_maladies_meddra(symptome))  # anciennement indication à la place de preferred_label
+        noms_maladies.extend(obtenir_nom_maladies_hpo(symptome))  # anciennement indication à la place de preferred_label
+
+    noms_maladies = list(set(noms_maladies))  # Supprime les doublons
 
     return noms_maladies  
+
+def obtenir_nom_maladies_meddra(indication):
+
+    maladies = []
+    maladies = execute_shell_command("request_TSV", "SIDER/meddra_all_indications.tsv", 7, indication, 4)
+    maladies.extend(execute_shell_command("request_TSV", "SIDER/meddra_all_indications.tsv", 4, indication, 7))
+    maladies = list(set(maladies))  # Supprime les doublons
+    maladies = [('MedDra', i) for i in maladies]
+
+    return maladies
+
 
 def obtenir_nom_maladies_hpo(indication): 
     '''
@@ -54,3 +67,6 @@ def obtenir_nom_maladies_hpo(indication):
     
     noms_maladies = list(set(noms_maladies))  # Supprime les doublons
     return noms_maladies
+
+if __name__ == "__main__":
+    maladies_responsables("Headache") # Test avec un exemple
