@@ -24,12 +24,10 @@ def entrer_indication():
         print("Problème lors du parsing de l'indication/symptome.")
         return
     
-    print("Les indications/symptomes sont : ", liste_indications)
+    # print("Les indications/symptomes sont : ", liste_indications)
 
     maladies.extend(mal.maladies_responsables(liste_indications[0])) # Recherche les maladies responsables de l'indication/symptome 
     medicaments.extend(med.medicaments_responsables(liste_indications[0])) # Recherche les médicaments responsables de l'indication/symptome
-    med_soignant.medicaments_soignant_symptomes(maladies)  # Merci de modifier la drubank à l'aide du fichier nv_drugbank.py avant d'utiliser cette fonction
-
     if len(liste_indications)!=1:
         for i in range(1, len(liste_indications)):
             nouvelles_maladies_responsables = mal.maladies_responsables(liste_indications[i])
@@ -39,6 +37,9 @@ def entrer_indication():
             maladies = list(set(maladies) & set(nouvelles_maladies_responsables))
             medicaments = list(set(medicaments) & set(nouveaux_medicaments_responsables))
             #medicaments_soignant = list(set(medicaments_soignant) & set(nouveaux_medicaments_soignant))
+    
+    maladies = med_soignant.medicaments_soignant_symptomes(maladies)  # Merci de modifier la drubank à l'aide du fichier nv_drugbank.py avant d'utiliser cette fonction
+    medicaments = med_soignant.medicaments_soignant_symptomes(medicaments)  # Merci de modifier la drubank à l'aide du fichier nv_drugbank.py avant d'utiliser cette fonction
     
     print("\n\n\nLes maladies responsables de l'indication/symptome sont à la fin : ", maladies)
     print("\n\n\nLes médicaments responsables de l'indication/symptome sont à la fin: ", medicaments)
