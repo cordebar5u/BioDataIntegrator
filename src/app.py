@@ -4,7 +4,13 @@ import flet as ft
 # Variables
 
 is_dark_mode = True
+
 index = 0
+maladies_responsables_listes = [("maladie 1", "source 1", "score 1"), ("maladie 2", "source 2", "score 2"), ("maladie 3", "source 3", "score 3")]
+medicaments_responsables_listes = [("medicament 1", "source 1", "score 1"), ("medicament 2", "source 2", "score 2"), ("medicament 3", "source 3", "score 3")]
+
+
+historique = ["Acute abdomen", "Aortitis syndrome"]
 
 # Fonctions
 
@@ -23,11 +29,31 @@ def fermer_recherche(Recherche: ft.SearchBar, e):
         text = f"{e.control.data}"
         Recherche.close_view(text)
 
-def rechercher(Recherche: ft.SearchBar , e):
+def rechercher(page, Recherche: ft.SearchBar , e):
+    global historique
     Recherche.close_view(e.data)
     print("Recherche en cours...")
     print(e.data)
+    indice = -1
+    taille = len(historique)
+    for i in range(taille):
+        if historique[i] == e.data:
+            indice = i
+            break
+    if indice != -1:
+        historique.pop(indice)
+        historique = [e.data] + historique
+    else: 
+        if taille == 5:
+            historique = [e.data] + historique[:4]
+        else:
+            historique = [e.data] + historique
+    Recherche.controls = [ft.ListTile(title=ft.Text(f"{i}"), on_click=lambda e: fermer_recherche(Recherche,e), data=i)
+        for i in historique # On peut mettre nos exemples ici
+    ]
+    print(historique)
     print("Recherche terminée")
+    page.update()
 
 def changerAffichage(page: ft.Page, maladies_responsables_tab, medicaments_responsables_tab):
     global index
@@ -63,10 +89,10 @@ def main(page: ft.Page):
         divider_color=ft.colors.AMBER,
         bar_hint_text="Rechercher symptomes...",
         # Recuperer le texte de la recherche
-        on_submit=lambda e: rechercher(Recherche, e),
+        on_submit=lambda e: rechercher(page, Recherche, e),
         controls=[
             ft.ListTile(title=ft.Text(f"{i}"), on_click=lambda e: fermer_recherche(Recherche,e), data=i)
-            for i in ["Acute abdomen", "Aortitis syndrome"] # On peut mettre nos exemples ici
+            for i in historique # On peut mettre nos exemples ici
         ],
     )
 
@@ -92,21 +118,19 @@ def main(page: ft.Page):
 
     # Conteneur qui contient une liste de maladies sous forme de boutons
 
-    maladies_responsables_listes = [("maladie 1", "source 1", "score 1"), ("maladie 2", "source 2", "score 2"), ("maladie 3", "source 3", "score 3")]
-    medicaments_responsables_listes = [("medicament 1", "source 1", "score 1"), ("medicament 2", "source 2", "score 2"), ("medicament 3", "source 3", "score 3")]
-
+    
     maladies_responsables_tab = ft.DataTable(
             columns=[
                 ft.DataColumn(ft.Text("Nom de la maladie")),
                 ft.DataColumn(ft.Text("Source")),
-                ft.DataColumn(ft.Text("Score"), numeric=True),
+                # ft.DataColumn(ft.Text("Score"), numeric=True),
             ],
             rows=[
                 ft.DataRow(
                     cells=[
                         ft.DataCell(ft.Text(maladie[0])),
                         ft.DataCell(ft.Text(maladie[1])),
-                        ft.DataCell(ft.Text(maladie[2])),
+                        # ft.DataCell(ft.Text(maladie[2])),
                     ]
                 )
                 for maladie in maladies_responsables_listes
@@ -117,24 +141,21 @@ def main(page: ft.Page):
             columns=[
                 ft.DataColumn(ft.Text("Nom du médicament")),
                 ft.DataColumn(ft.Text("Source")),
-                ft.DataColumn(ft.Text("Score"), numeric=True),
+                # ft.DataColumn(ft.Text("Score"), numeric=True),
             ],
             rows=[
                 ft.DataRow(
                     cells=[
                         ft.DataCell(ft.Text(medicament[0])),
                         ft.DataCell(ft.Text(medicament[1])),
-                        ft.DataCell(ft.Text(medicament[2])),
+                        # ft.DataCell(ft.Text(medicament[2])),
                     ]
                 )
                 for medicament in medicaments_responsables_listes
             ],
         )
 
-    Tableau = maladies_responsables_tab
-
-
-    page.add(Titre, Recherche, Menu, Tableau)
+    page.add(Titre, Recherche, Menu, maladies_responsables_tab)
     page.update()         
 
 
