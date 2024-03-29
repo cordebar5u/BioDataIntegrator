@@ -80,7 +80,6 @@ def recherche(symptome: str, verbose =False):
 	# Regarde si l'index existe
 	data_dir = os.path.join(os.path.dirname(__file__), '..', 'data', 'OMIM', 'index')
 	try:
-		print("Index trouvé")
 		ix = open_dir(data_dir)
 	except:
 		creer_index()

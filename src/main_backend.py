@@ -41,7 +41,7 @@ def entrer_indication():
     print("\n\n\nLes maladies responsables de l'indication/symptome sont à la fin : ", maladies)
     print("\n\n\nLes médicaments responsables de l'indication/symptome sont à la fin: ", medicaments)
 
-    return indication
+    return maladies, medicaments
 
 def parser_indication(indication):
     '''

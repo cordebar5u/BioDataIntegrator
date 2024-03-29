@@ -88,7 +88,6 @@ def recherche_symptome(symptome: str, verbose: bool = False):
 	donnee_dir = os.path.join(os.path.dirname(__file__), '..', 'data', 'HPO', 'index')
 	try:
 		ix = open_dir(donnee_dir)
-		print("Index trouvé")
 	except:
 		creer_index()
 		ix = open_dir(donnee_dir)
